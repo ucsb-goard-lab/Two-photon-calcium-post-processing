@@ -29,6 +29,8 @@ function [] = A_ProcessTimeSeries(filelist,register_flag,nonrigid_flag,movie_fla
 % Code written by Michael Goard - updated: Oct 2016
 % Nonrigid registration added by James Roney - June 2017
 
+%% Set paths
+addpath('./subroutine')
 %% Load files
 if nargin==0
     filelist = uigetfile('.tif','MultiSelect','on');
