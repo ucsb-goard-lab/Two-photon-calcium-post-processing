@@ -21,6 +21,9 @@ function C_ExtractDFF(filelist,norm_type,smart_subtract)
 % 
 % Code written by Michael Goard - updated: June 2017
 
+%% Set paths
+addpath(genpath('./subroutine'))
+
 %% Determine type of normalization
 if nargin < 2
     norm_type = questdlg('Normalize fluorescence traces?','Dialog box',...

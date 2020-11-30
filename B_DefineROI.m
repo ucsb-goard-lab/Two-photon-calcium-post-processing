@@ -40,6 +40,9 @@ function [] = B_DefineROI(filelist)
 %
 % Code written by Michael Goard & Gerald Pho - updated: Oct 2013
 
+%% Set paths
+addpath(genpath('./subroutine'))
+
 %% get list of all files from user
 if nargin == 0
     disp('Select data files: ')

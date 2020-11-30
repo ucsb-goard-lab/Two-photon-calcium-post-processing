@@ -14,6 +14,9 @@ function [] = D_PlotDFF(data,fig,currPage,stopFlag)
 % 
 % Code written by Michael Goard - updated: Oct 2013
 
+%% Set paths
+addpath(genpath('./subroutine'))
+
 % initialize on first iteration
 if nargin==0
 	clear
