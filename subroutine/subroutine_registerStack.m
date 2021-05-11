@@ -46,7 +46,7 @@ if isempty(reference)
     else
         idx_vec = [1:floor(numFrames/1000):numFrames];
     end
-    sum_proj = zeros(xPixels, yPixels, length(idx_vec), 'single');
+    sum_proj = zeros(yPixels, xPixels, length(idx_vec), 'single');
     for i = 1:length(idx_vec)
         subroutine_progressbar(i/length(idx_vec));
         sum_proj(:,:,i) = single(imread(data.filename,idx_vec(i)));
