@@ -5,22 +5,22 @@ if nargin==0
     disp('Load data file')
     [filename,pathname] = uigetfile('.mat');
     cd(pathname);
-    load(filename)
+    data = importdata(filename);
     
     disp('Load file to transfer ROIs from:')
     [template_filename,template_pathname] = uigetfile('.mat');
     cd(template_pathname);
-    transfer = load(template_filename);
+    transfer = importdata(template_filename);
 else
     cd(pathname);
-    load(filename)
+    data = importdata(filename);
     if nargin > 3
         cd(template_pathname);
     end
-    transfer = load(template_filename);
+    transfer = importdata(template_filename);
 end
 
 % save
-data.cellMasks = transfer.data.cellMasks;
+data.cellMasks = transfer.cellMasks;
 cd(pathname)
 eval(['save ' data.filename(1:end-4) '_data data']);
