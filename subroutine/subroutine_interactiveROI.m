@@ -19,7 +19,7 @@ if nargin < 1
     cd(pathname);
 end
 currVar.filename = filename;
-load(filename,'data');
+data = importdata(filename);
 
 %% load data channels
 currVar.green = subroutine_normalize(data.avg_projection); % average projection of green channel

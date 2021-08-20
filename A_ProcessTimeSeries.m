@@ -1,4 +1,4 @@
-function [] = A_ProcessTimeSeries(filelist,register_flag,nonrigid_flag,movie_flag)
+function [save_fn] = A_ProcessTimeSeries(filelist,register_flag,nonrigid_flag,movie_flag)
 
 %% A_ProcessTimeSeries.m
 %
@@ -250,7 +250,10 @@ for i = 1:lengthList
     end
     
     %% save
-    eval(['save ' data.filename(1:end-4) '_data data']);
+    save_fn = strcat(data.filename(1:end-4), '_data.mat')
+    % save(strcat(data.filename(1:end-4), '_data', 'data')
+    % eval(['save ' data.filename(1:end-4) '_data data']);
+    save(save_fn, 'data');
     clear data
 end
 
@@ -370,7 +373,4 @@ if lengthList > 1
     set(gcf,'color',[1 1 1])
     saveas(gcf,'Activity_map')
     close       
-    
 end
-
-
