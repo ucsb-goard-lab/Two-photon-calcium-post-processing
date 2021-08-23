@@ -17,7 +17,7 @@ else
     if nargin > 3
         cd(template_pathname);
     end
-    transfer = importdata(template_filename);
+    transfer = importdata(strcat(template_filename, '.mat'));
 end
 
 % save
