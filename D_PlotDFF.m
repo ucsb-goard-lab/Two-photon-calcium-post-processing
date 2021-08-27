@@ -23,7 +23,7 @@ if nargin==0
 	disp('load data file')
 	[filename,pathname] = uigetfile('.mat');
 	cd(pathname);
-	load(filename);
+	data = importdata(filename);
 	currPage = 1;
 	fig = figure;
 	stopFlag = 0;
