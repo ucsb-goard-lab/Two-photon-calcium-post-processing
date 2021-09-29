@@ -55,7 +55,7 @@ function [c, s, options] = deconvolveCa(y, varargin)
 % ported from the Python implementation from Johannes Friedrich
 
 %% References
-% Friedrich J et.al., NIPS 2016, Fast Active Set Method for Online Spike Inference from Calcium Imaging
+% Pnevmatikais, EA et al, Neuron 2016, Simultaneous Denoising, Deconvolution, and Demixing of Calcium Imaging Data (https://www.sciencedirect.com/science/article/pii/S0896627315010843)
 
 %% input arguments
 y = reshape(y, [], 1);  % reshape the trace as a vector
