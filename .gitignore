@@ -1,0 +1,15 @@
+*.asv
+*.m~
+*.mex*
+*.mlappinstall
+*.mltbx
+helpsearch*/
+slprj/
+sccprj/
+codegen/
+*.autosave
+*.slxc
+octave-workspace
+.DS_Store
+~$*.docx
+*.docx
