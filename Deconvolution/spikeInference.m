@@ -18,15 +18,14 @@ load(filename);
 dffDeconv = zeros(size(data.DFF));
 
 for n = 1:size(data.DFF, 1)
-subroutine_progressbar(n/size(data.DFF,1));
+    % subroutine_progressbar(n/size(data.DFF,1));
     % get trace and run deconvolution
     n
     trace = data.DFF(n,:);
     [denoised,spikes,opt] = deconvolveCa(trace, 'ar1' ,'foopsi', 'optimize_pars');
     dffDeconv(n,:) = spikes;
-    
 end
-subroutine_progressbar(1);close all;
+% subroutine_progressbar(1);close all;
 
 data.spikes = dffDeconv;
 

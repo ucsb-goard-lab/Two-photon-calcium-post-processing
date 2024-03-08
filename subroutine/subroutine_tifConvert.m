@@ -50,17 +50,17 @@ image_matrix = zeros([yPixels xPixels numFrames],'uint16');
 
 % read tifs itno uint16 matrix
 disp('Reading single-page Tif files...')
-for i = 1:numFrames
+for i = progress(1:numFrames)
     image_matrix(:,:,i) = imread(filename);
     filename(number_idx)=num2str(str2num(filename(number_idx))+1,'%06d');
     %filename(number_idx)=num2str(str2num(filename(number_idx))+1,'%05d');
 
-    if rem(i,10)==0
-        subroutine_progressbar(i/numFrames);
-    end
+    % if rem(i,10)==0
+    %     subroutine_progressbar(i/numFrames);
+    % end
 end
-subroutine_progressbar(1); 
-close all
+% subroutine_progressbar(1); 
+% close all
 
 % write to tif file (tif files >4GB supported)
 disp('Writing to multi-page Tif file...')
@@ -71,17 +71,17 @@ subroutine_saveastiff(image_matrix,new_filename,options);
 disp('Deleting single-page Tif files...')
 try imread(new_filename,numFrames);
     filename = firstfile;
-    for i = 1:numFrames
+    for i = progress(1:numFrames)
         delete(filename)
         filename(number_idx)=num2str(str2num(filename(number_idx))+1,'%06d');
         %filename(number_idx)=num2str(str2num(filename(number_idx))+1,'%05d');
 
-        if rem(i,10)==0
-            subroutine_progressbar(i/numFrames);
-        end
+        % if rem(i,10)==0
+        %     subroutine_progressbar(i/numFrames);
+        % end
     end
-    subroutine_progressbar(1);
-    close all
+    % subroutine_progressbar(1);
+    % close all
     disp('Conversion complete.')
 catch
     disp('Error: new file appears not to have saved properly, single-page Tif files preserved')

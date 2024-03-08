@@ -156,8 +156,8 @@ for i = 1:lengthList
     frame_F = [];
     disp('Calculating activity map...')
     
-    for j = 1:num_blocks
-        subroutine_progressbar(j/num_blocks);
+    for j = progress(1:num_blocks)
+        % subroutine_progressbar(j/num_blocks);
         idx_vec = (j-1)*block_size+1:min(j*block_size,data.numFrames);
         curr_block_size = length(idx_vec);
         tc = zeros(data.yPixels,data.xPixels,curr_block_size, 'single');
@@ -185,8 +185,8 @@ for i = 1:lengthList
         k_xy = k_xy+k_image*curr_block_size;
     end
     
-    subroutine_progressbar(1);
-    close all
+    % subroutine_progressbar(1);
+    % close all
     
     data.avg_projection = avg_projection/data.numFrames;
     data.frame_F = frame_F;
@@ -250,7 +250,7 @@ for i = 1:lengthList
     end
     
     %% save
-    save_fn = strcat(data.filename(1:end-4), '_data.mat')
+    save_fn = strcat(data.filename(1:end-4), '_data.mat');
     % save(strcat(data.filename(1:end-4), '_data', 'data')
     % eval(['save ' data.filename(1:end-4) '_data data']);
     save(save_fn, 'data');
@@ -340,7 +340,7 @@ if lengthList > 1
             data.all_activity_map(isnan(data.all_activity_map)) = mean(mean(data.all_activity_map, 'omitnan'));
             data.xPixels = size(data.avg_projection,2);
             data.yPixels = size(data.avg_projection,1);
-            save([data.filename(1:end-4) '_data.mat'],'data')
+            save([data.filename(1:end-4) '_data.mat'],'data');
         end
     end
     %% Plot fluorescence time course

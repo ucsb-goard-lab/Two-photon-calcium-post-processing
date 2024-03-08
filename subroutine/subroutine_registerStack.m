@@ -46,14 +46,16 @@ if isempty(reference)
     else
         idx_vec = [1:floor(numFrames/1000):numFrames];
     end
+
     sum_proj = zeros(yPixels, xPixels, length(idx_vec), 'single');
-    for i = 1:length(idx_vec)
-        subroutine_progressbar(i/length(idx_vec));
+
+    for i = progress(1:length(idx_vec))
+        % subroutine_progressbar(i/length(idx_vec));
         sum_proj(:,:,i) = single(imread(data.filename,idx_vec(i)));
     end
     template = mean(sum_proj,3);
-    subroutine_progressbar(1);
-    close all
+    % subroutine_progressbar(1);
+    % close all
 else
     template = reference;
 end
@@ -63,10 +65,10 @@ ref_frame(1+maxOffset:yPixels+maxOffset,1+maxOffset:xPixels+maxOffset) = templat
 %% Register
 disp('aligning frames...');
 new_filename = [filename(1:end-4) '_registered.tif'];
-for i = 1:numFrames
-    if rem(i,10)==0
-        subroutine_progressbar(i/numFrames);
-    end
+for i = progress(1:numFrames)
+    % if rem(i,10)==0
+    %     subroutine_progressbar(i/numFrames);
+    % end
     curr_frame = single(imread(filename,i));
     % Measure 2D xCorr
     if(use_fft)
@@ -98,8 +100,8 @@ for i = 1:numFrames
     end
     image_matrix(:,:,i) = uint16(reg_frame);
 end
-subroutine_progressbar(1);
-close all
+% subroutine_progressbar(1);
+% close all
 
 % write to Tif file (tif files >4GB supported)
 disp('Writing to multi-page Tif file...')

@@ -12,16 +12,16 @@ image_matrix = zeros([length(data.warp.yCrop) length(data.warp.xCrop) data.numFr
 
 %% Register
 new_filename = [data.filename(1:end-4) '_warped.tif'];
-for i = 1:data.numFrames
-    if rem(i,10)==0
-        subroutine_progressbar(i/data.numFrames);
-    end
+for i = progress(1:data.numFrames)
+    % if rem(i,10)==0
+    %     subroutine_progressbar(i/data.numFrames);
+    % end
     curr_frame = double(imread(data.filename,i));
     reg_frame = uint16(subroutine_vectorWarp(curr_frame, data.warp.vx, data.warp.vy, 0));
     image_matrix(:,:,i) = reg_frame(data.warp.yCrop, data.warp.xCrop);
 end
-subroutine_progressbar(1);
-close all
+% subroutine_progressbar(1);
+% close all
 
 % write to Tif file (tif files >4GB supported)
 disp('Writing to multi-page Tif file...')

@@ -135,11 +135,11 @@ for filenum = 1:lengthList
             curr_chunk = curr_chunk./norm_mat;
         end
      
-        for j = 1:numCells
+        for j = progress(1:numCells)
             data.raw_F(j,idx) = sum(curr_chunk(mask(:,j),:))/sum(mask(:,j));%collapse into 1D timecourse and save
-            if rem(j,10)==0
-                subroutine_progressbar((numCells*(i-1)+j)/(numCells*num_blocks));
-            end
+            % if rem(j,10)==0
+            %     subroutine_progressbar((numCells*(i-1)+j)/(numCells*num_blocks));
+            % end
             if norm_neuropil==1
                 data.neuropil_F(j,idx) = sum(curr_chunk(neuropil_mask(:,j),:))/sum(neuropil_mask(:,j));
             end
@@ -148,7 +148,7 @@ for filenum = 1:lengthList
             data.neuropil_F(isnan(data.neuropil_F)) = 0;
         end
     end
-    subroutine_progressbar(1); close all
+    % subroutine_progressbar(1); close all
     
     % calculate DFF
     disp('Calculating DF/F...')
