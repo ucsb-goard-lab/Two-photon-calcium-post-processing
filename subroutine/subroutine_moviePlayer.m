@@ -34,11 +34,11 @@ end
 %% Display frames
 for i = 1:data.numFrames-(avgFrame-1)
 	if rem(i,downSamp)==0
-		currFrame = double(imread(data.filename,i))/scaleFactor;
+		currFrame = double(imlongread(data.filename, i))/scaleFactor;
         
         % calculate local average frame
         for j = 1:avgFrame-1
-            currFrame = currFrame+double(imread(data.filename,i+j))/scaleFactor;
+            currFrame = currFrame+double(imlongread(data.filename, i+j))/scaleFactor;
         end
         currFrame = currFrame/avgFrame;
         

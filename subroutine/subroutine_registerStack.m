@@ -49,10 +49,16 @@ if isempty(reference)
 
     sum_proj = zeros(yPixels, xPixels, length(idx_vec), 'single');
 
-    for i = progress(1:length(idx_vec))
-        % subroutine_progressbar(i/length(idx_vec));
-        sum_proj(:,:,i) = single(imread(data.filename,idx_vec(i)));
+    if data.numFrames < 2^16
+        for i = progress(1:length(idx_vec))
+            sum_proj(:,:,i) = single(imread(data.filename,idx_vec(i)));
+        end
+    elseif data.numFrames >= 2^16
+        for i = progress(1:length(idx_vec))
+            sum_proj(:,:,i) = single(imlongread(data.filename,idx_vec(i)));
+        end
     end
+        
     template = mean(sum_proj,3);
     % subroutine_progressbar(1);
     % close all
@@ -69,7 +75,7 @@ for i = progress(1:numFrames)
     % if rem(i,10)==0
     %     subroutine_progressbar(i/numFrames);
     % end
-    curr_frame = single(imread(filename,i));
+    curr_frame = single(imlongread(filename, i));
     % Measure 2D xCorr
     if(use_fft)
         shifts = subroutine_dftregistration(fft2(template), fft2(curr_frame));

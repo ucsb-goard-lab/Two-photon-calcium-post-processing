@@ -113,12 +113,15 @@ for i = 1:lengthList
                 data.frameRate = 1/sscanf(cfg_line(index:end),'repetitionPeriod="%f"');
                 if isinf(data.frameRate)
                     data.frameRate = input('Enter frame rate (Hz): ');
+                    % data.frameRate = 20;
                 end
             end
         end
     else
         data.frameRate = input('Enter frame rate (Hz): ');
+        % data.frameRate = 20;
     end
+    display(sprintf('Using frame rate %d', data.frameRate));
     
     %% Perform X-Y Registration (movement correction)
     if strcmp(register_flag,'Yes')
@@ -162,9 +165,19 @@ for i = 1:lengthList
         curr_block_size = length(idx_vec);
         tc = zeros(data.yPixels,data.xPixels,curr_block_size, 'single');
         
-        for n = 1:curr_block_size
-            tc(:,:,n) = single(imread(data.filename,idx_vec(n)));
-        end 
+
+        if data.numFrames < 2^16
+            for n = 1:curr_block_size
+                tc(:,:,n) = single(imread(data.filename,idx_vec(n)));
+            end
+        elseif data.numFrames >= 2^16
+            % If the tiff stack has too many pages to be read in by the
+            % base imread function, use a custom function instead. Could
+            % probably use this for all image stacks and not test size?
+            for n = 1:curr_block_size
+                tc(:,:,n) = single(imlongread(data.filename, idx_vec(n)));
+            end
+        end
         
         % average projection
         avg_projection = avg_projection+sum(tc,3);
@@ -250,9 +263,16 @@ for i = 1:lengthList
     end
     
     %% save
-    save_fn = strcat(data.filename(1:end-4), '_data.mat');
+    if isstring(data.filename)
+        usename = char(data.filename);
+    elseif ischar(data.filename)
+        usename = data.filename;
+    end
+    save_fn = strcat(usename(1:end-4), '_data.mat');
     % save(strcat(data.filename(1:end-4), '_data', 'data')
     % eval(['save ' data.filename(1:end-4) '_data data']);
+    display(save_fn);
+    
     save(save_fn, 'data');
     clear data
 end
@@ -281,7 +301,9 @@ if lengthList > 1
             load([filename(1:end-4) '_data.mat']);
             data.activity_map = mean_activity_map;
             data.avg_projection = mean_avg_projection;
-            save([filename(1:end-4) '_data.mat'],'data')
+            if mustBeTextScalar([filename(1:end-4) '_data.mat'])
+                save([filename(1:end-4) '_data.mat'], 'data')
+            end
         end
     elseif strcmp(nonrigid_flag,'Yes')
         %%initialize master file data

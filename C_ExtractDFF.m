@@ -118,13 +118,19 @@ for filenum = 1:lengthList
     block_size = 500;    % frames in each block (to avoid memory crash)
     num_blocks = ceil(data.numFrames/block_size);
     meanF = mean(mean(data.avg_projection));
-    for i = 1:num_blocks
+    for i = progress(1:num_blocks)
         idx = ((i-1)*block_size+1:min(i*block_size, data.numFrames));
         curr_block_size = length(idx);
         curr_chunk = zeros(data.yPixels,data.xPixels,curr_block_size);
-        for n = 1:curr_block_size
-            curr_chunk(:,:,n) = imread(data.filename,idx(n));
-        end 
+        if data.numFrames < 2^16
+            for n = 1:curr_block_size
+                curr_chunk(:,:,n) = imread(data.filename, idx(n));
+            end
+        elseif data.numFrames >= 2^16
+            for n = 1:curr_block_size
+                curr_chunk(:,:,n) = imlongread(data.filename, idx(n));
+            end
+        end
         
         curr_chunk = single(reshape(curr_chunk, [], curr_block_size));%unroll pixels
         
@@ -135,7 +141,7 @@ for filenum = 1:lengthList
             curr_chunk = curr_chunk./norm_mat;
         end
      
-        for j = progress(1:numCells)
+        for j = 1:numCells
             data.raw_F(j,idx) = sum(curr_chunk(mask(:,j),:))/sum(mask(:,j));%collapse into 1D timecourse and save
             % if rem(j,10)==0
             %     subroutine_progressbar((numCells*(i-1)+j)/(numCells*num_blocks));
