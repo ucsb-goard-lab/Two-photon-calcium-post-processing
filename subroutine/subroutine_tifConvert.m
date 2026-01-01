@@ -1,4 +1,4 @@
-function [new_filename] = subroutine_tifConvert(firstfile, save_directory)
+function [new_filename] = subroutine_tifConvert(firstfile, save_directory, downsample)
 % Convert individual tifs into a multi-page tif file
 % Uses subroutine_loadtiff.m and subroutine_saveastiff.m for files >4GB
 % Code written by Michael Goard - last update: Oct 2016
@@ -14,6 +14,11 @@ end
 if nargin < 2 || isempty(save_directory)
     save_directory = pwd;
 end
+
+if nargin < 3 || isempty(downsample)
+    downsample = 0;
+end
+
 % find indices and initialize
 underscore_index = find(firstfile=='_');
 new_filename = [firstfile(1:underscore_index(1)-1) '.tif'];
@@ -65,7 +70,14 @@ end
 % write to tif file (tif files >4GB supported)
 disp('Writing to multi-page Tif file...')
 options.big = true;
-subroutine_saveastiff(image_matrix,new_filename,options);  
+
+if downsample == 1
+    % Downsample image top half the initial resolution. Only the first two
+    % dimensions are resized!
+    image_matrix = imresize(image_matrix, 0.5);
+end
+
+subroutine_saveastiff(image_matrix, new_filename, options);
     
 % delete single files
 disp('Deleting single-page Tif files...')
@@ -74,14 +86,7 @@ try imread(new_filename,numFrames);
     for i = progress(1:numFrames)
         delete(filename)
         filename(number_idx)=num2str(str2num(filename(number_idx))+1,'%06d');
-        %filename(number_idx)=num2str(str2num(filename(number_idx))+1,'%05d');
-
-        % if rem(i,10)==0
-        %     subroutine_progressbar(i/numFrames);
-        % end
     end
-    % subroutine_progressbar(1);
-    % close all
     disp('Conversion complete.')
 catch
     disp('Error: new file appears not to have saved properly, single-page Tif files preserved')

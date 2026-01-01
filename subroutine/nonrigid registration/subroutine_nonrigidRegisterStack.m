@@ -28,5 +28,11 @@ end
 
 % write to Tif file (tif files >4GB supported)
 disp('Writing to multi-page Tif file...')
-options.big = true;
-subroutine_saveastiff(image_matrix,new_filename,options);  
+if size(image_matrix,3) < 2^16
+    options.big = true;
+    subroutine_saveastiff(image_matrix, new_filename, options);
+elseif size(image_matrix,3) >= 2^16
+    imlongwrite(image_matrix, new_filename)
+end
+
+end
