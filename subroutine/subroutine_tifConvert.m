@@ -23,7 +23,9 @@ new_filename = [firstfile(1:underscore_index(1)-1) '.tif'];
 % new_path = uigetdir('Choose where you want to save the multi-tiff');
 new_filename = strcat(save_directory,'/',new_filename);
 
-number_idx = [find(firstfile=='.')-6:find(firstfile=='.')-1];
+% Scalar index: multi-dot names (e.g. *.ome.tif) break colon with find('.') vector
+dot_pos = find(firstfile=='.', 1, 'first');
+number_idx = dot_pos-6 : dot_pos-1;
 %number_idx = [find(firstfile=='.')-5:find(firstfile=='.')-1];
 
 
