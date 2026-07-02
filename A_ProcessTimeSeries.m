@@ -146,7 +146,11 @@ for i = 1:lengthList
     %% Calculate kurtosis map
     
     % mean frame flourescence (for measuring photobleaching)
-    frame_F = zeros(1,data.numFrames);
+    try
+        header = imfinfo(data.filename);
+    catch
+        header = [];
+    end
     
     % Params
     win = 7;             % in pixels (e.g., default: 7x7 neighborhood)
@@ -156,7 +160,7 @@ for i = 1:lengthList
     num_blocks = ceil(data.numFrames/block_size);
     k_xy = zeros(data.yPixels,data.xPixels); % activity map
     avg_projection = zeros(data.yPixels,data.xPixels);
-    frame_F = [];
+    frame_F = zeros(1,data.numFrames);
     disp('Calculating activity map...')
     
     for j = progress(1:num_blocks)
@@ -168,7 +172,11 @@ for i = 1:lengthList
 
         if data.numFrames < 2^16
             for n = 1:curr_block_size
-                tc(:,:,n) = single(imread(data.filename,idx_vec(n)));
+                if ~isempty(header)
+                    tc(:,:,n) = single(imread(data.filename,idx_vec(n),'Info',header));
+                else
+                    tc(:,:,n) = single(imread(data.filename,idx_vec(n)));
+                end
             end
         elseif data.numFrames >= 2^16
             % If the tiff stack has too many pages to be read in by the
@@ -183,12 +191,11 @@ for i = 1:lengthList
         avg_projection = avg_projection+sum(tc,3);
         
         % mean fluorescence across frame
-        frame_F = cat(2,frame_F,squeeze(mean(mean(tc,1),2))');
+        frame_F(idx_vec) = squeeze(mean(mean(tc,1),2))';
         
         % filter
-        kernel = ones(win,win); % rectangular kernal
         for n = 1:curr_block_size
-            tc(:,:,n) = imfilter(tc(:,:,n),kernel,'same')/sum(sum(kernel));
+            tc(:,:,n) = imboxfilt(tc(:,:,n),win);
         end
         
         % Kurtosis

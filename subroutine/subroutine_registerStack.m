@@ -71,6 +71,9 @@ ref_frame(1+maxOffset:yPixels+maxOffset,1+maxOffset:xPixels+maxOffset) = templat
 %% Register
 disp('aligning frames...');
 new_filename = [filename(1:end-4) '_registered.tif'];
+if(use_fft)
+    fft_template = fft2(template);
+end
 for i = progress(1:numFrames)
     % if rem(i,10)==0
     %     subroutine_progressbar(i/numFrames);
@@ -78,7 +81,7 @@ for i = progress(1:numFrames)
     curr_frame = single(imlongread(filename, i));
     % Measure 2D xCorr
     if(use_fft)
-        shifts = subroutine_dftregistration(fft2(template), fft2(curr_frame));
+        shifts = subroutine_dftregistration(fft_template, fft2(curr_frame));
         corr_offset = -shifts(3:4);
     else
         cc = normxcorr2(template,curr_frame);
